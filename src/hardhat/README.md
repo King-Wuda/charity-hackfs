@@ -11,3 +11,7 @@ GAS_REPORT=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
+
+write donorcancelled test:
+add has donated
+add donor canel

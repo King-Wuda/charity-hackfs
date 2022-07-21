@@ -11,7 +11,7 @@ contract charity {
     }
 
     struct Donor {
-        uint256 jd;
+        uint256 donorCount;
         address donor;
         uint256 amount;
     }
@@ -22,9 +22,11 @@ contract charity {
 
     event GoalHit(uint256 id, address person, uint256 goal);
 
-    event Donated(uint256 jd, address donor, uint256 amount);
+    event Donated(uint256 donorCount, address donor, uint256 amount);
 
-    event ProceedsWithdrawn(address person, uint256 proceeds);
+    event DonorCancelled(uint256 donorCount, address donor);
+
+    event ProceedsWithdrawn(uint256 id, address person, uint256 proceeds);
 
     mapping(address => mapping(uint256 => Donor)) private donors;
     mapping(address => mapping(uint256 => Cause)) private listings;
@@ -43,8 +45,8 @@ contract charity {
         _;
     }
 
-    modifier hasDonated(uint256 jd, address donor) {
-        Donor memory dons = donors[donor][jd];
+    modifier hasDonated(uint256 donorCount, address donor) {
+        Donor memory dons = donors[donor][donorCount];
         require(dons.amount <= 0, "Has Not Donated to Cause");
         _;
     }
@@ -78,28 +80,34 @@ contract charity {
     function Donate(
         uint256 id,
         address person,
-        uint256 jd,
+        uint256 donorCount,
         address donor,
         uint256 amount
     ) external payable isListed(id, person) {
         amount = msg.value;
         Cause memory listedCause = listings[person][id];
-        donors[donor][jd] = Donor(jd, msg.sender, amount);
-        emit Donated(jd, msg.sender, amount);
+        uint256 goal = listedCause.goal;
+        donors[donor][donorCount] = Donor(donorCount, msg.sender, amount);
+        emit Donated(donorCount, msg.sender, amount);
         proceeds[listedCause.person] += amount;
         donation[msg.sender] += msg.value;
-        jd++;
+        if (proceeds[listedCause.person] >= goal) {
+            emit GoalHit(id, person, goal);
+        }
+        // donor gets nft
+        donorCount++;
     }
 
-    function DonorCancelled(uint256 jd, address donor)
+    function DonorCancel(uint256 donorCount, address donor)
         external
-        hasDonated(jd, donor)
+        hasDonated(donorCount, donor)
     {
         donation[donor] = 0;
         // Transfer vs call vs Send
         // payable(msg.sender).transfer(address(this).balance);
         (bool success, ) = donor.call{value: donation[donor]}("");
         require(success);
+        emit DonorCancelled(donorCount, donor);
     }
 
     function UpdateCause(
@@ -111,13 +119,17 @@ contract charity {
         emit CauseListed(id, msg.sender, newGoal);
     }
 
-    function WithdrawProceeds() external {
+    function WithdrawProceeds(uint256 id, address person)
+        external
+        isListed(id, person)
+        isOwner(id, msg.sender)
+    {
         uint256 balance = proceeds[msg.sender];
         require(balance > 0, "No proceeds");
         balance = 0;
         (bool success, ) = payable(msg.sender).call{value: balance}("");
         require(success, "Transfer failed");
-        emit ProceedsWithdrawn(msg.sender, balance);
+        emit ProceedsWithdrawn(id, msg.sender, balance);
     }
 
     function getListing(uint256 ad, address person)
