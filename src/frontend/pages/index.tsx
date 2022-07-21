@@ -1,6 +1,7 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Link from 'next/link'
 import styles from '../styles/Home.module.css';
 import { Typography, Button } from 'antd';
 
@@ -30,8 +31,8 @@ const Home: NextPage = () => {
         <Title level={3} style={{margin:'0',marginBottom:'.6rem'}}>Get funding for your cause</Title>
         <Text style={{textAlign:'center', width:'70%'}}>We are on a mission to connect life-changing causes seeking funding with the right group of donors in a decentralized way</Text>
         <div className={styles.btnGroup}>
-        <Button shape='round' size='large'>Get funding for a cause</Button>
-        <Button shape='round' size='large'>Donate to a cause</Button>
+        <Button shape='round' size='large'><Link href='/activity'>Get funding for a cause</Link></Button>
+        <Button shape='round' size='large'><Link href='/activity'>Donate to a cause</Link></Button>
         </div>
 
       </main>
@@ -39,13 +40,6 @@ const Home: NextPage = () => {
   );
 };
 
-function Header(){
-  return(
-    <header>
-      <div>Razemoney</div>
-      <div><ConnectButton /></div>
-    </header>
-  )
-}
+
 
 export default Home;
