@@ -7,7 +7,6 @@ import { Typography, Button } from 'antd';
 
 const { Title, Text } = Typography;
 
-import 'antd/dist/antd.css';
 
 
 const Home: NextPage = () => {
