@@ -1,7 +1,10 @@
+import {useState} from 'react'
 import Layout from '../components/layout'
-import { Typography, Button, List} from 'antd'
+import { Typography, Modal} from 'antd'
 import CauseCard from '../components/causeCard'
 const {Text,Title} = Typography;
+
+import ActivityList from '../components/list/component'
 
 
 const listData = [
@@ -39,52 +42,19 @@ const listData = [
 
 
 export default function Activity(){
+
     return(
     <Layout>
             <CauseCard/>
-        <div style={{border:'1px solid #e5e5e5',width:'100%',padding: '1rem', borderRadius:'20px'}}>
-            <Title level={2}>Causes</Title>
-            <List
-            itemLayout="horizontal"
-            dataSource={listData}
-            renderItem={item => (
-                <List.Item
-                key={item.name}
-                extra={<ListItemAction amountRequired={item.amountRequired}/> }
-                >
-                <List.Item.Meta
-                title={<TitleNode name={item.name} address={item.address}/>}
-                description={<div style={{width:'80%'}}><Text type='secondary' >{item.desc}</Text></div>}
-                />
-            </List.Item>
-             )}
-             />
-        </div>
+        <ActivityList dataSource={listData} listTitle='Causes'/>
      </Layout>
     )
 }
 
-
-function ListItemAction({amountRequired}){
-    return(
-        <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-            <Button shape='round' size='large' type='primary'>Donate</Button>
-            <Text type='secondary'>{amountRequired}ETH</Text>
+function CauseForm(){
+    return (
+        <div>
+            
         </div>
-    )
-}
-
-function TitleNode({address, name}){
-    return(
-        <div style={{display:'flex'}}>
-        <Title style={{margin:'0 .5rem 0 0'}} level={5}>{name}</Title>
-        <AddressPill address={address}/>
-        </div>
-    )
-}
-
-function AddressPill({address}){
-    return(
-        <Text style={{ padding:'0.2rem .5rem',background:'#f2f2f2', borderRadius:'50px'}}>{address.substring(0,4)}...{address.substring(38,42)}</Text>
     )
 }
