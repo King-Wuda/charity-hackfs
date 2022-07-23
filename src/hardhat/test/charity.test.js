@@ -17,8 +17,8 @@ const { developmentChains } = require("../helper-hardhat-config");
         accounts = await ethers.getSigners(); // could also do with getNamedAccounts
         deployer = accounts[0];
         user = accounts[1];
-        await deployments.fixture(["all"]);
-        charityContract = await ethers.getContract("charity");
+        await deployments.fixture(["all", "charity"]);
+        charityContract = await ethers.getContractFactory("Charity");
         charity = charityContract.connect(deployer);
         // basicNftContract = await ethers.getContract("BasicNft");
         // basicNft = await basicNftContract.connect(deployer);
@@ -28,7 +28,7 @@ const { developmentChains } = require("../helper-hardhat-config");
 
       describe("listCause", function () {
         it("emits an event after listing a Cause", async function () {
-          expect(await charity.listCause(id, person, goal)).to.emit(
+          expect(await charityContract.listCause(id, person, goal)).to.emit(
             "CauseListed"
           );
         });
