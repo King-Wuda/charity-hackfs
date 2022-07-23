@@ -4,6 +4,9 @@ import { Typography, Modal, Form, Input, InputNumber,Upload,Button} from 'antd'
 import { UploadOutlined,PlusOutlined } from '@ant-design/icons';
 import CauseCard from '../components/causeCard'
 const {Text,Title} = Typography;
+import { Web3Storage } from 'web3.storage'
+const web3Storage = new Web3Storage({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEZBQzlEOTU1MTlkNDNEODI4QjNFOUM4YzcyYWNGMTAwMzZDQmI2NzIiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTg1NzM5MDI4MzMsIm5hbWUiOiJyYXplbW9uZXkifQ.-t2MaQWF0WEh711BGU8Z9Cx7s5rTYw7B1Ho4Xg9iANQ' })
+
 
 import ActivityList from '../components/list/component'
 
@@ -46,12 +49,21 @@ export default function Activity(){
 
     const [causeForm, setCauseForm] = useState(false);
 
+    // function to toggle form cause creation
     const handleCauseFormToggle = () =>{
         setCauseForm(!causeForm);
     }
-    const handleFormSubmit = ()=>{
 
-    }
+    const handleFormSubmit = async(e)=>{
+        console.log(e.upload)
+        const files = e.upload;
+        try{
+            const cid = await web3Storage.put(files,{onRootCidReady});
+            console.log(cid)
+        }catch(err){
+            console.log(err)
+        }
+    } 
 
     return(
 
@@ -73,9 +85,11 @@ function CauseForm({onFormSubmit}){
         if (Array.isArray(e)) {
           return e;
         }
-      
-        // return e?.fileList;
+
+        return e?.fileList;
       };
+
+
 
     return (
     <Form
@@ -115,7 +129,7 @@ function CauseForm({onFormSubmit}){
         getValueFromEvent={normFile}
         extra="Upload images of your cause (.png, .jpeg, .jpg only)"
       >
-        <Upload name="logo" action="/upload.do" listType="picture-card">
+        <Upload name="logo"  listType="picture-card">
           <div>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Upload</div>
