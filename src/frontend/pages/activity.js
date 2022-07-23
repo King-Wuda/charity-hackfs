@@ -1,6 +1,7 @@
-import {useState} from 'react'
+import {useState,useRef} from 'react'
 import Layout from '../components/layout'
-import { Typography, Modal} from 'antd'
+import { Typography, Modal, Form, Input, InputNumber,Upload,Button} from 'antd'
+import { UploadOutlined,PlusOutlined } from '@ant-design/icons';
 import CauseCard from '../components/causeCard'
 const {Text,Title} = Typography;
 
@@ -43,18 +44,92 @@ const listData = [
 
 export default function Activity(){
 
+    const [causeForm, setCauseForm] = useState(false);
+
+    const handleCauseFormToggle = () =>{
+        setCauseForm(!causeForm);
+    }
+    const handleFormSubmit = ()=>{
+
+    }
+
     return(
+
     <Layout>
-            <CauseCard/>
+        <CauseCard onCauseFormToggle = {handleCauseFormToggle}/>
         <ActivityList dataSource={listData} listTitle='Causes'/>
-     </Layout>
+        <Modal title="Tell us about your cause" visible={causeForm} onCancel={handleCauseFormToggle} footer={null}>
+         <CauseForm onFormSubmit={handleFormSubmit} />
+        </Modal> 
+    </Layout>
     )
 }
 
-function CauseForm(){
+function CauseForm({onFormSubmit}){
+
+    const normFile = (e) => {
+        console.log('Upload event:', e);
+      
+        if (Array.isArray(e)) {
+          return e;
+        }
+      
+        // return e?.fileList;
+      };
+
     return (
-        <div>
-            
-        </div>
+    <Form
+     layout='vertical'
+      name="Cause form"
+      onFinish={onFormSubmit}
+      scrollToFirstError
+    >
+      <Form.Item
+        name="name"
+        rules={[{required:true,message: 'Please provide a name for your cause!'}]}
+        label="Cause name"
+      >
+        <Input placeholder="Name of cause" />
+      </Form.Item>
+
+      <Form.Item
+        name="description"
+        rules={[{required:true,message: 'Please write your description!'}]}
+        label="Descripton of cause"
+      >
+        <Input placeholder="Describe your cause" />
+      </Form.Item>
+
+      <Form.Item
+        name="amountRequired"
+        rules={[{required:true,message: 'Please input amount required!'}]}
+        label="Amount required"
+      >
+        <InputNumber addonAfter="ETH" defaultValue={100} />
+      </Form.Item>
+
+      <Form.Item
+        name="upload"
+        label="Upload"
+        valuePropName="fileList"
+        getValueFromEvent={normFile}
+        extra="Upload images of your cause (.png, .jpeg, .jpg only)"
+      >
+        <Upload name="logo" action="/upload.do" listType="picture-card">
+          <div>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+          </div>
+        </Upload>
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+
+    </Form>
+
     )
 }
