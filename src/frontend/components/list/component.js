@@ -2,10 +2,13 @@ import {List,Typography,Button, IconText} from 'antd'
 import { LikeOutlined, MessageOutlined, StarOutlined ,DeleteFilled, EditFilled} from '@ant-design/icons';
 const {Title,Text} = Typography;
 
-export default function ActivityList({onDeleteItem, dataSource, listTitle = ''}){
+export default function ActivityList({ mode = 'editor', onDeleteItem,onDonationToggle, dataSource, listTitle = ''}){
 
 
-     
+     const editorControls= (index) =>  [
+        <DeleteFilled onClick={()=>onDeleteItem(index)} />,
+        <EditFilled />
+      ]
 
     return(
     <div style={{border:'1px solid #e5e5e5',width:'100%',padding: '1rem', borderRadius:'20px'}}>
@@ -16,11 +19,8 @@ export default function ActivityList({onDeleteItem, dataSource, listTitle = ''})
         renderItem={(item,index) => (
             <List.Item
             key={index}
-            actions={[
-                <DeleteFilled onClick={()=>onDeleteItem(index)} />,
-                <EditFilled />
-              ]}
-            extra={<ListItemActionNode amountRequired={item.amountRequired}/> }
+            actions={mode=='editor'?editorControls(index):null}
+            extra={<ListItemActionNode onDonationToggle={onDonationToggle} mode={mode} amountRequired={item.amountRequired}/> }
             >
             <List.Item.Meta
             title={<TitleNode name={item.name} address={''}/>}
@@ -41,13 +41,13 @@ function DescriptionNode({desc}){
 }
 
 
-function ListItemActionNode({amountRequired}){
+function ListItemActionNode({mode,amountRequired,onDonationToggle}){
     return(
         <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-            <Button shape='round' size='large' type='primary'>Donate</Button>
-            <Text type='secondary'>{amountRequired}MATIC</Text>
+            {mode=='editor'? <Button onClick={onDonationToggle} shape='round' size='large' type='primary'>Donate</Button>: <Title level={5}>{amountRequired}MATIC</Title>}
+            {mode == 'editor'? <Text type='secondary'>{amountRequired}MATIC</Text>:''}
         </div>
-    )
+    ) 
 }
 
 function TitleNode({address, name}){

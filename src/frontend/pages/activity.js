@@ -48,6 +48,7 @@ const listData = [
 export default function Activity(){
 
     const [causeForm, setCauseForm] = useState(false);
+    const [donationModal, setDonationModal] = useState(false);
     const [causeList, setCauseList] = useState([]);
     const [currentUser, setCurrentUser] = useState('');
 
@@ -57,6 +58,20 @@ export default function Activity(){
         setCauseForm(!causeForm);
     }  
 
+    // funcition to toggle donation modal
+    const handleDonationModalToggle = () =>{
+        setDonationModal(!donationModal);
+    }
+
+    // function to handle submitting a donation
+    const handleDonateToCause = (e)=>{
+        console.log(e)
+
+        //close modal
+        handleDonationModalToggle()
+    }
+
+    // function to handle submission of a cause
     const handleFormSubmit = async(e)=>{
 
         const newCause = {
@@ -77,6 +92,7 @@ export default function Activity(){
 
     }  
 
+    // function to handle deleting a cause
     const handleDeleteItem = (id)=>{
         const updatedList = causeList.filter((_,index)=>index!=id)
         setCauseList(updatedList)
@@ -86,11 +102,45 @@ export default function Activity(){
 
     <Layout>
         <CauseCard onCauseFormToggle = {handleCauseFormToggle}/>
-        <ActivityList onDeleteItem={handleDeleteItem} dataSource={causeList} listTitle='Causes'/>
+        <ActivityList onDeleteItem={handleDeleteItem} onDonationToggle = {handleDonationModalToggle} dataSource={causeList} listTitle='Causes'/>
+
         <Modal title="Tell us about your cause" visible={causeForm} onCancel={handleCauseFormToggle} footer={null}>
          <CauseForm onFormSubmit={handleFormSubmit} />
         </Modal> 
+
+        <Modal title="Donate to cause" visible={donationModal} onCancel={handleDonationModalToggle} footer={null}>
+         <DonateForm onDonateToCause={handleDonateToCause} />
+        </Modal>
     </Layout>
+    )
+}
+ 
+function DonateForm({onDonateToCause}){
+    return(
+<Form
+     layout='vertical'
+      name="Cause form"
+      onFinish={onDonateToCause}
+      scrollToFirstError
+    > 
+      
+      <Form.Item
+        name="amountToDonate"
+        rules={[{required:true,message: 'Please input amount required!'}]}
+        label="Amount to donate"
+      >
+        <InputNumber addonAfter="MATIC" initialValues={100} />
+      </Form.Item>
+
+      
+      <Form.Item>
+        <Button width='100%' type="primary" htmlType="submit">
+          Donate
+        </Button>
+      </Form.Item>
+
+    </Form>
+
     )
 }
 
@@ -139,24 +189,9 @@ function CauseForm({onFormSubmit}){
         <InputNumber addonAfter="MATIC" initialValues={100} />
       </Form.Item>
 
-      {/* <Form.Item
-        name="upload"
-        label="Upload"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-        extra="Upload images of your cause (.png, .jpeg, .jpg only)"
-      >
-        <Upload name="logo"  listType="picture-card">
-          <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </div>
-        </Upload>
-      </Form.Item> */}
-
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Submit
+          Create Cause
         </Button>
       </Form.Item>
 
