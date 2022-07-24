@@ -1,21 +1,29 @@
-import {List,Typography,Button} from 'antd'
-
+import {List,Typography,Button, IconText} from 'antd'
+import { LikeOutlined, MessageOutlined, StarOutlined ,DeleteFilled, EditFilled} from '@ant-design/icons';
 const {Title,Text} = Typography;
 
-export default function ActivityList({dataSource, listTitle = ''}){
+export default function ActivityList({onDeleteItem, dataSource, listTitle = ''}){
+
+
+     
+
     return(
     <div style={{border:'1px solid #e5e5e5',width:'100%',padding: '1rem', borderRadius:'20px'}}>
         <Title level={2}>{listTitle}</Title>
         <List
-        itemLayout="horizontal"
+        itemLayout="vertical"
         dataSource={dataSource}
-        renderItem={item => (
+        renderItem={(item,index) => (
             <List.Item
-            key={item.name}
+            key={index}
+            actions={[
+                <DeleteFilled onClick={()=>onDeleteItem(index)} />,
+                <EditFilled />
+              ]}
             extra={<ListItemActionNode amountRequired={item.amountRequired}/> }
             >
             <List.Item.Meta
-            title={<TitleNode name={item.name} address={item.address}/>}
+            title={<TitleNode name={item.name} address={''}/>}
             description={<DescriptionNode desc={item.desc}/>}
             />
         </List.Item>
@@ -37,7 +45,7 @@ function ListItemActionNode({amountRequired}){
     return(
         <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
             <Button shape='round' size='large' type='primary'>Donate</Button>
-            <Text type='secondary'>{amountRequired}ETH</Text>
+            <Text type='secondary'>{amountRequired}MATIC</Text>
         </div>
     )
 }
@@ -46,7 +54,7 @@ function TitleNode({address, name}){
     return(
         <div style={{display:'flex'}}>
         <Title style={{margin:'0 .5rem 0 0'}} level={5}>{name}</Title>
-        <AddressPill address={address}/>
+        {/* <AddressPill address={address}/> */}
         </div>
     )
 }

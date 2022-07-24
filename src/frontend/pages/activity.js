@@ -1,10 +1,12 @@
 import {useState,useRef} from 'react'
 import Layout from '../components/layout'
 import { Typography, Modal, Form, Input, InputNumber,Upload,Button} from 'antd'
-import { UploadOutlined,PlusOutlined } from '@ant-design/icons';
 import CauseCard from '../components/causeCard'
 const {Text,Title} = Typography;
+import Web3 from 'web3'
 
+const CONTRACT_ABI = '';
+const CONTRACT_ADDRESS = '';
 
 import ActivityList from '../components/list/component'
 
@@ -46,26 +48,45 @@ const listData = [
 export default function Activity(){
 
     const [causeForm, setCauseForm] = useState(false);
+    const [causeList, setCauseList] = useState([]);
+    const [currentUser, setCurrentUser] = useState('');
+
 
     // function to toggle form cause creation
     const handleCauseFormToggle = () =>{
         setCauseForm(!causeForm);
-    }
+    }  
 
     const handleFormSubmit = async(e)=>{
-        const payload = {
+
+        const newCause = {
             name: e.name,
-            description: e.description,
+            desc: e.description,
             amountRequired: e.amountRequired,
+            // pass in current user address
+            address: ''
         }
 
-    } 
+        // update local state
+        const clonedList = causeList.slice();
+        clonedList.push(newCause) 
+        setCauseList(clonedList);
+
+        // close down modal form
+        handleCauseFormToggle()
+
+    }  
+
+    const handleDeleteItem = (id)=>{
+        const updatedList = causeList.filter((_,index)=>index!=id)
+        setCauseList(updatedList)
+    }
 
     return(
 
     <Layout>
         <CauseCard onCauseFormToggle = {handleCauseFormToggle}/>
-        <ActivityList dataSource={listData} listTitle='Causes'/>
+        <ActivityList onDeleteItem={handleDeleteItem} dataSource={causeList} listTitle='Causes'/>
         <Modal title="Tell us about your cause" visible={causeForm} onCancel={handleCauseFormToggle} footer={null}>
          <CauseForm onFormSubmit={handleFormSubmit} />
         </Modal> 
@@ -115,7 +136,7 @@ function CauseForm({onFormSubmit}){
         rules={[{required:true,message: 'Please input amount required!'}]}
         label="Amount required"
       >
-        <InputNumber addonAfter="MATIC" defaultValue={100} />
+        <InputNumber addonAfter="MATIC" initialValues={100} />
       </Form.Item>
 
       {/* <Form.Item
