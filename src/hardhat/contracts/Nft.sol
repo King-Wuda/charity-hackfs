@@ -1,28 +1,39 @@
-//Contract based on [https://docs.openzeppelin.com/contracts/3.x/erc721](https://docs.openzeppelin.com/contracts/3.x/erc721)
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract RazeMoneyToken is ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+contract RazeMoneyToken is ERC721 {
+    string public constant TOKEN_URI =
+        "ipfs://QmdryoExpgEQQQgJPoruwGJyZmz6SqV4FRTX1i73CT3iXn";
+    uint256 private s_tokenCounter;
 
-    constructor() ERC721("RazeMoneyToken", "RMT") {}
+    event RazeMinted(uint256 indexed tokenId);
 
-    function mintNFT(address recipient, string memory tokenURI)
+    constructor() ERC721("RazeMoneyToken", "RMT") {
+        s_tokenCounter = 0;
+    }
+
+    function mintNft() public {
+        _safeMint(msg.sender, s_tokenCounter);
+        emit RazeMinted(s_tokenCounter);
+        s_tokenCounter = s_tokenCounter + 1;
+    }
+
+    function tokenURI(uint256 tokenId)
         public
-        returns (uint256)
+        view
+        override
+        returns (string memory)
     {
-        _tokenIds.increment();
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+        return TOKEN_URI;
+    }
 
-        uint256 newItemId = _tokenIds.current();
-        _mint(recipient, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-
-        return newItemId;
+    function getTokenCounter() public view returns (uint256) {
+        return s_tokenCounter;
     }
 }
