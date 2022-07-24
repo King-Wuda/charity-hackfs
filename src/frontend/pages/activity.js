@@ -4,8 +4,6 @@ import { Typography, Modal, Form, Input, InputNumber,Upload,Button} from 'antd'
 import { UploadOutlined,PlusOutlined } from '@ant-design/icons';
 import CauseCard from '../components/causeCard'
 const {Text,Title} = Typography;
-import { Web3Storage } from 'web3.storage'
-const web3Storage = new Web3Storage({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEZBQzlEOTU1MTlkNDNEODI4QjNFOUM4YzcyYWNGMTAwMzZDQmI2NzIiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTg1NzM5MDI4MzMsIm5hbWUiOiJyYXplbW9uZXkifQ.-t2MaQWF0WEh711BGU8Z9Cx7s5rTYw7B1Ho4Xg9iANQ' })
 
 
 import ActivityList from '../components/list/component'
@@ -55,14 +53,19 @@ export default function Activity(){
     }
 
     const handleFormSubmit = async(e)=>{
-        console.log(e.upload)
-        const files = e.upload;
-        try{
-            const cid = await web3Storage.put(files,{onRootCidReady});
-            console.log(cid)
-        }catch(err){
-            console.log(err)
+        const payload = {
+            name: e.name,
+            description: e.description,
+            amountRequired: e.amountRequired,
         }
+        // fetch('/api/submitCause',{
+        //     method:'POST',
+        //     body:JSON.stringify(payload),
+        //     // headers:{
+        //     //     'Content-Type': 'application/json'
+        //     // }
+        // }).then(response=>response.json()).then(data=>console.log(data))
+
     } 
 
     return(
@@ -122,7 +125,7 @@ function CauseForm({onFormSubmit}){
         <InputNumber addonAfter="ETH" defaultValue={100} />
       </Form.Item>
 
-      <Form.Item
+      {/* <Form.Item
         name="upload"
         label="Upload"
         valuePropName="fileList"
@@ -135,7 +138,7 @@ function CauseForm({onFormSubmit}){
             <div style={{ marginTop: 8 }}>Upload</div>
           </div>
         </Upload>
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
