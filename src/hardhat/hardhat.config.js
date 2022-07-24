@@ -13,7 +13,7 @@ require("dotenv").config();
 const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-// const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+const POLYGON_RPC_URL = process.env.POLYGONSCAN_RPC_URL;
 
 module.exports = {
   defaultNetwork: "hardhat",
@@ -34,12 +34,12 @@ module.exports = {
       saveDeployments: true,
       chainId: 4,
     },
-    // polygon: {
-    //   url: POLYGON_MAINNET_RPC_URL,
-    //   accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    //   saveDeployments: true,
-    //   chainId: 137,
-    // },
+    polygon: {
+      url: "https://polygon-mumbai.g.alchemy.com/v2/k1_MhyDTBU34J17-WrwyOvN55g2gFm15",
+      accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+      saveDeployments: true,
+      chainId: 80001,
+    },
   },
   etherscan: {
     // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
