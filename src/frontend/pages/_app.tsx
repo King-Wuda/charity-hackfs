@@ -12,6 +12,7 @@ import 'antd/dist/antd.css';
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
+    chain.polygonMumbai,
     chain.mainnet,
     chain.polygon,
     chain.optimism,

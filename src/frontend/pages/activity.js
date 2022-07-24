@@ -58,13 +58,6 @@ export default function Activity(){
             description: e.description,
             amountRequired: e.amountRequired,
         }
-        // fetch('/api/submitCause',{
-        //     method:'POST',
-        //     body:JSON.stringify(payload),
-        //     // headers:{
-        //     //     'Content-Type': 'application/json'
-        //     // }
-        // }).then(response=>response.json()).then(data=>console.log(data))
 
     } 
 
@@ -122,7 +115,7 @@ function CauseForm({onFormSubmit}){
         rules={[{required:true,message: 'Please input amount required!'}]}
         label="Amount required"
       >
-        <InputNumber addonAfter="ETH" defaultValue={100} />
+        <InputNumber addonAfter="MATIC" defaultValue={100} />
       </Form.Item>
 
       {/* <Form.Item
