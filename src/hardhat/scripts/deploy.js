@@ -1,35 +1,18 @@
-const { network } = require("hardhat");
-const {
-  developmentChains,
-  VERIFICATION_BLOCK_CONFIRMATIONS,
-} = require("../helper-hardhat-config");
-const { verify } = require("../utils/verify");
+const { ethers } = require("hardhat");
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { deploy, log } = deployments;
-  const { deployer } = await getNamedAccounts();
-  const waitBlockConfirmations = developmentChains.includes(network.name)
-    ? 1
-    : VERIFICATION_BLOCK_CONFIRMATIONS;
+async function main() {
+  const charityContract = await ethers.getContractFactory("Charity");
+  const deployedCharity = await charityContract.deploy();
+  console.log("Charity contract address:", deployedCharity.address);
 
-  log("----------------------------------------------------");
-  const arguments = [];
-  const charity = await deploy("charity", {
-    from: deployer,
-    args: arguments,
-    log: true,
-    waitConfirmations: waitBlockConfirmations,
+  const nftContract = await ethers.getContractFactory("RazeMoneyToken");
+  const deployedNft = await nftContract.deploy();
+  console.log("NFT contract address:", deployedNft.address);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
   });
-
-  // Verify the deployment
-  if (
-    !developmentChains.includes(network.name) &&
-    process.env.ETHERSCAN_API_KEY
-  ) {
-    log("Verifying...");
-    await verify(charity.address, arguments);
-  }
-  log("----------------------------------------------------");
-};
-
-module.exports.tags = ["all", "charity"];
