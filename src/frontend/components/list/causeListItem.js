@@ -1,14 +1,14 @@
 import {List,Typography,Button, IconText} from 'antd'
-import {DeleteFilled, EditFilled} from '@ant-design/icons';
+import { LikeOutlined, MessageOutlined, StarOutlined ,DeleteFilled, EditFilled} from '@ant-design/icons';
 const {Title,Text} = Typography;
 
-export default function ActivityList({ onUpdateCause, mode = 'editor', onDeleteItem,onDonationToggle, dataSource, listTitle = ''}){
+export default function ActivityList({ onDeleteItem,onDonationToggle, dataSource, listTitle = ''}){
+
 
      const editorControls= (index) =>  [
         <DeleteFilled onClick={()=>onDeleteItem(index)} />,
-        <EditFilled onClick={()=>onUpdateCause(index)} />
+        <EditFilled />
       ]
-
 
     return(
     <div style={{border:'1px solid #e5e5e5',width:'100%',padding: '1rem', borderRadius:'20px'}}>
@@ -20,7 +20,7 @@ export default function ActivityList({ onUpdateCause, mode = 'editor', onDeleteI
             <List.Item
             key={index}
             actions={mode=='editor'?editorControls(index):null}
-            extra={<ListItemActionNode onDonationToggle={onDonationToggle} mode={mode} amountRequired={item.amountRequired}/> }
+            extra={<ListItemActionNode onDonationToggle={onDonationToggle} amountRequired={item.amountRequired}/> }
             >
             <List.Item.Meta
             title={<TitleNode name={item.name} address={''}/>}
@@ -41,11 +41,11 @@ function DescriptionNode({desc}){
 }
 
 
-function ListItemActionNode({currentId, updateCause, mode, amountRequired, onDonationToggle}){
+function ListItemActionNode({amountRequired,onDonationToggle}){
     return(
         <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-            {mode=='editor'? <Button onClick={onDonationToggle} shape='round' size='large' type='primary'>Donate</Button>: <Title level={5}>{amountRequired}MATIC</Title>}
-            {mode == 'editor'? <Text type='secondary'>{amountRequired}MATIC</Text>:''}
+            <Button onClick={onDonationToggle} shape='round' size='large' type='primary'>Widthdraw Proceeds</Button>: <Title level={5}>{amountRequired}MATIC</Title>
+            <Text type='secondary'>{amountRequired}MATIC</Text>
         </div>
     ) 
 }
